@@ -1,18 +1,25 @@
 package com.sihvi.glsm.sls
 
-import com.sihvi.glsm.memory.Memory
+import com.sihvi.glsm.memory.IMemory
 import com.sihvi.glsm.strategy.Strategy
 import com.sihvi.glsm.transitionpredicate.TransitionPredicate
 
-class GLSM<T, U: Memory<T>>(
-        private val memory: U,
-        private val strategy: Strategy<T>,
-        private val terminationPredicate: TransitionPredicate<U>
+/**
+ *
+ *
+ * @param[T] Solution entity type
+ * @param[S] Solution type
+ * @param[M] Memory type
+ */
+class GLSM<T, S, M: IMemory<S>>(
+        private val memory: M,
+        private val strategy: Strategy<T, M>,
+        private val terminationPredicate: TransitionPredicate<M>
 ) {
-    fun solve(): Pair<Array<T>, Double> {
+    fun solve(): S {
         while (!terminationPredicate.isTerminate(memory)) {
-            strategy.step()
+            strategy.step(memory)
         }
-        return Pair(memory.bestSolution, memory.bestSolutionCost)
+        return memory.getBestSolution()
     }
 }

@@ -88,3 +88,7 @@ buildSrcTmp/
 distTmp/
 outTmp/
 gradlew*
+bin/
+.settings/
+.classpath
+.project

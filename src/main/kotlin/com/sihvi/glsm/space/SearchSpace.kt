@@ -4,7 +4,15 @@ interface SearchSpace<T> {
     fun getInitial(): Array<T>
 }
 
-interface DiscreteSearchSpace<T> : SearchSpace<T> {
+interface HasDiscreteNeighbourhood<T> {
     fun getNeighbourhood(solution: Array<T>): Sequence<Array<T>>
+}
+
+interface HasRandomNeighbour<T> {
     fun getRandomNeighbour(solution: Array<T>): Array<T>
 }
+
+interface DiscreteSearchSpace<T> :
+    SearchSpace<T>,
+    HasDiscreteNeighbourhood<T>,
+    HasRandomNeighbour<T>

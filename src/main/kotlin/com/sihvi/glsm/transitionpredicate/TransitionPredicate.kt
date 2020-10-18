@@ -1,7 +1,7 @@
 package com.sihvi.glsm.transitionpredicate
 
-import com.sihvi.glsm.memory.Memory
+import com.sihvi.glsm.memory.IMemory
 
-interface TransitionPredicate<T : Memory<*>> {
+interface TransitionPredicate<in T : IMemory<*>> {
     fun isTerminate(memory: T): Boolean
 }

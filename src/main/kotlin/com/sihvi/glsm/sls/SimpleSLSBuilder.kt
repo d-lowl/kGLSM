@@ -1,36 +1,34 @@
 package com.sihvi.glsm.sls
 
-import com.sihvi.glsm.memory.Memory
-import com.sihvi.glsm.problem.Problem
-import com.sihvi.glsm.space.SearchSpace
+import com.sihvi.glsm.memory.IMemory
 import com.sihvi.glsm.strategy.Strategy
 import com.sihvi.glsm.transitionpredicate.TransitionPredicate
 import java.lang.Exception
 
-class SimpleSLSBuilder<T, U: Memory<T>>: SLSBuilder<T, U> {
-    private var memory: U? = null
-    private var strategy: Strategy<T>? = null
-    private var terminationPredicate: TransitionPredicate<U>? = null
+class SimpleSLSBuilder<T, S, M: IMemory<S>>: SLSBuilder<T, S, M> {
+    private var memory: M? = null
+    private var strategy: Strategy<T, M>? = null
+    private var terminationPredicate: TransitionPredicate<M>? = null
 
-    fun addMemory(memory: U): SimpleSLSBuilder<T, U> {
+    fun addMemory(memory: M): SimpleSLSBuilder<T, S, M> {
         this.memory = memory
         return this
     }
 
-    fun addStrategy(strategy: Strategy<T>): SimpleSLSBuilder<T, U> {
+    fun addStrategy(strategy: Strategy<T, M>): SimpleSLSBuilder<T, S, M> {
         this.strategy = strategy
         return this
     }
 
-    fun addTerminationPredicate(terminationPredicate: TransitionPredicate<U>): SimpleSLSBuilder<T, U> {
+    fun addTerminationPredicate(terminationPredicate: TransitionPredicate<M>): SimpleSLSBuilder<T, S, M> {
         this.terminationPredicate = terminationPredicate
         return this
     }
 
-    override fun build(): GLSM<T, U> {
-        if(memory == null) throw Exception("Memory is not defined")
-        if(strategy == null) throw Exception("Strategy is not defined")
-        if(terminationPredicate == null) throw Exception("Termination Predicate is not defined")
+    override fun build(): GLSM<T, S, M> {
+        if(memory == null) throw Exception("Memory not provided")
+        if(strategy == null) throw Exception("Strategy not provided")
+        if(terminationPredicate == null) throw Exception("Termination Predicate not provided")
 
         return GLSM(memory!!, strategy!!, terminationPredicate!!)
     }

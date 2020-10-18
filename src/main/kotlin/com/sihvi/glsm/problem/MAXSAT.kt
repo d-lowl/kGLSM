@@ -11,7 +11,10 @@ class SATClause(private val literals: Array<SATLiteral>) {
 
     fun evaluate(assignment: Array<Boolean>): Boolean {
         assert(assignment.size - 1 >= maxIndex)
-        return literals.any { assignment[it.index] && !it.negated }
+        return literals.any {
+            val b = assignment[it.index]
+            if (!it.negated) b else !b
+        }
     }
 
     override fun toString(): String = "(${literals.joinToString("∨")})"
