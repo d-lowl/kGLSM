@@ -2,6 +2,7 @@ package com.sihvi.glsm.transitionpredicate
 
 import com.sihvi.glsm.memory.HasStepCount
 import com.sihvi.glsm.memory.IMemory
+import com.sihvi.glsm.memory.SingleStateSolution
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -10,7 +11,7 @@ internal class FixedIterationPredicateTest {
     inner class Memory(private val _stepCount: Int) : IMemory<Unit>, HasStepCount {
         override fun getBestSolution(): Unit = TODO("Not yet implemented")
         override fun getCurrentSolution(): Unit = TODO("Not yet implemented")
-        override fun update(data: Unit) = TODO("Not yet implemented")
+        override fun update(solution: Unit) = TODO("Not yet implemented")
 
         override fun getStepCount(): Int = _stepCount
     }

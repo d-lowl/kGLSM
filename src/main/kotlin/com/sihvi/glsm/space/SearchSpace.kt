@@ -1,5 +1,10 @@
 package com.sihvi.glsm.space
 
+/**
+ * Search space
+ *
+ * @param[T] Solution entity type
+ */
 interface SearchSpace<T> {
     fun getInitial(): Array<T>
 }

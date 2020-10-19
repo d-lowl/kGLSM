@@ -8,13 +8,19 @@ package com.sihvi.glsm.memory
 interface IMemory<U> {
     fun getBestSolution(): U
     fun getCurrentSolution(): U
-    fun update(data: U)
+    fun update(solution: U)
 }
 
+/**
+ * Memory trait to have step count
+ */
 interface HasStepCount {
     fun getStepCount(): Int
 }
 
+/**
+ * Memory trait to count steps without improvement
+ */
 interface HasNoImprovementCount {
     fun getNoImprovementCount(): Int
 }

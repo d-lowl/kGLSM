@@ -11,7 +11,7 @@ internal class NoImprovementPredicateTest {
     inner class Memory(private val noImprovementCount: Int) : IMemory<Unit>, HasNoImprovementCount {
         override fun getBestSolution(): Unit = TODO("Not yet implemented")
         override fun getCurrentSolution(): Unit = TODO("Not yet implemented")
-        override fun update(data: Unit) = TODO("Not yet implemented")
+        override fun update(solution: Unit) = TODO("Not yet implemented")
 
         override fun getNoImprovementCount(): Int = noImprovementCount
     }
