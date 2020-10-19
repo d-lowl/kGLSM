@@ -17,4 +17,5 @@ This is WIP, the signatures most likely will be changed in the future, until I s
 
 ## References
 [SLS 2005] [H. H. Hoos and Stützle Thomas, _Stochastic local search: foundations and applications._ Amsterdam: Morgan Kaufmann Publishers, 2005.](https://www.elsevier.com/books/stochastic-local-search/hoos/978-1-55860-872-6) -- Main reference for SLS algorithms and GLSM framework. If not explicitly stated otherwise, you can assume that it's from this book.
+
 [SURVEY 2012] Parejo, J.A., Ruiz-Cortés, A., Lozano, S. et al. _Metaheuristic optimization frameworks: a survey and benchmarking._ Soft Comput 16, 527–561 (2012). [https://doi.org/10.1007/s00500-011-0754-8](https://doi.org/10.1007/s00500-011-0754-8) -- a good review and a benchmark of existing libraries for metaheuristics/SLS algorithms. More comparisons with this approach against the pre-existing once are to come.
