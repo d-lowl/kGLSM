@@ -6,16 +6,14 @@ import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.DiscreteSearchSpace
 import kotlin.random.Random
 
-enum class ILSMode {
+enum class IIMode {
     BEST, RANDOM
 }
 
-class IterativeLocalSearch<T>(
-        private val space: DiscreteSearchSpace<T>,
-        private val problem: Problem<T>,
-        private val mode: ILSMode
-) : Strategy<T, SingleStateMemory<T>>(space, problem) {
-    override fun step(memory: SingleStateMemory<T>) {
+class IterativeImprovementStrategy<T>(
+        private val mode: IIMode
+) : Strategy<T, SingleStateMemory<T>, DiscreteSearchSpace<T>>() {
+    override fun step(memory: SingleStateMemory<T>, space: DiscreteSearchSpace<T>, problem: Problem<T>) {
         val neighbourhood = space.getNeighbourhood(memory.getCurrentSolution().solution)
         val neighbourhoodSolutions = neighbourhood
                 .map { problem.evaluate(it) }
@@ -27,8 +25,8 @@ class IterativeLocalSearch<T>(
             memory.getCurrentSolution()
         } else {
             when(mode) {
-                ILSMode.BEST -> improvement.minBy { it.cost }!!
-                ILSMode.RANDOM -> improvement[Random.nextInt(improvement.size)]
+                IIMode.BEST -> improvement.minBy { it.cost }!!
+                IIMode.RANDOM -> improvement[Random.nextInt(improvement.size)]
             }
         }
         memory.update(newSolution)

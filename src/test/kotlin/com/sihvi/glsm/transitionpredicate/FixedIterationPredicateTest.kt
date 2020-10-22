@@ -2,7 +2,6 @@ package com.sihvi.glsm.transitionpredicate
 
 import com.sihvi.glsm.memory.HasStepCount
 import com.sihvi.glsm.memory.IMemory
-import com.sihvi.glsm.memory.SingleStateSolution
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -24,16 +23,16 @@ internal class FixedIterationPredicateTest {
 
     @Test
     fun isTerminate() {
-        assertTrue(predicate.isTerminate(memory = Memory(10))) {
+        assertTrue(predicate.isSatisified(memory = Memory(10))) {
             "Must terminate when maximum number of iterations reached"
         }
-        assertTrue(predicate.isTerminate(memory = Memory(11))) {
+        assertTrue(predicate.isSatisified(memory = Memory(11))) {
             "Must terminate when maximum number of iterations reached"
         }
-        assertFalse(predicate.isTerminate(memory = Memory(9))) {
+        assertFalse(predicate.isSatisified(memory = Memory(9))) {
             "Must not terminate until maximum number of iterations reached"
         }
-        assertFalse(predicate.isTerminate(memory = Memory(0))) {
+        assertFalse(predicate.isSatisified(memory = Memory(0))) {
             "Must not terminate until maximum number of iterations reached"
         }
     }

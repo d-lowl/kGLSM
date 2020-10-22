@@ -6,5 +6,5 @@ import com.sihvi.glsm.memory.IMemory
 class FixedIterationPredicate<T>(private val maxIterations: Int): TransitionPredicate<T>
         where T : IMemory<*>, T : HasStepCount
 {
-    override fun isTerminate(memory: T): Boolean = memory.getStepCount() >= maxIterations
+    override fun isSatisified(memory: T): Boolean = memory.getStepCount() >= maxIterations
 }
