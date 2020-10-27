@@ -4,15 +4,19 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
+configurations {
+    jar.archiveName = 'kglsm.jar'
+}
+
 group 'com.sihvi'
-version '0.2-WIP'
+version '0.2'
 
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId = 'com.sihvi'
+            groupId = group
             artifactId = 'kglsm'
-            version = '0.1-WIP'
+            version = version
 
             from components.java
         }

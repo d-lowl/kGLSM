@@ -87,7 +87,6 @@ local.properties
 buildSrcTmp/
 distTmp/
 outTmp/
-gradlew*
 bin/
 .settings/
 .classpath
