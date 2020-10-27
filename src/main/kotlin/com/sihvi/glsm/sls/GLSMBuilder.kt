@@ -4,7 +4,7 @@ import com.sihvi.glsm.memory.IMemory
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 
-class GLSMBuilder<T, S, M: IMemory<S>, N: SearchSpace<T>> {
+class GLSMBuilder<T, S, M: IMemory<T, S>, N: SearchSpace<T>> {
     private var memory: M? = null
     fun addMemory(memory: M): GLSMBuilder<T, S, M, N> {
         this.memory = memory

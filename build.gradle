@@ -1,10 +1,24 @@
 plugins {
+    id 'maven-publish'
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 group 'com.sihvi'
-version '0.1-WIP'
+version '0.2-WIP'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.sihvi'
+            artifactId = 'kglsm'
+            version = '0.1-WIP'
+
+            from components.java
+        }
+    }
+}
+
 
 repositories {
     mavenCentral()

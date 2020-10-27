@@ -4,7 +4,7 @@ import com.sihvi.glsm.memory.IMemory
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 
-class StateMachineBuilder<T, S, M: IMemory<S>, N: SearchSpace<T>> {
+class StateMachineBuilder<T, S, M: IMemory<T, S>, N: SearchSpace<T>> {
 
     private var strategies = mutableListOf<Strategy<T, M, N>>()
     private var transitions = mutableListOf<StateMachineTransition<M>>()

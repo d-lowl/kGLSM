@@ -1,37 +1,31 @@
 package com.sihvi.glsm.transitionpredicate
 
-import com.sihvi.glsm.memory.HasNoImprovementCount
-import com.sihvi.glsm.memory.IMemory
+import com.sihvi.glsm.memory.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 
 internal class NoImprovementPredicateTest {
-    inner class Memory(private val noImprovementCount: Int) : IMemory<Unit>, HasNoImprovementCount {
-        override fun getBestSolution(): Unit = TODO("Not yet implemented")
-        override fun getCurrentSolution(): Unit = TODO("Not yet implemented")
-        override fun update(solution: Unit) = TODO("Not yet implemented")
+    class MockMemory(override var noImprovementCount: Int) : Memory<Unit, BasicSolution<Unit>>(BasicCurrentState(BasicSolution<Unit>(arrayOf<Unit>(), 0.0)), BasicSolution<Unit>(arrayOf<Unit>(), 0.0))
 
-        override fun getNoImprovementCount(): Int = noImprovementCount
-    }
 
 
     companion object {
-        val predicate = NoImprovementPredicate<Memory>(10)
+        val predicate = NoImprovementPredicate<MockMemory>(10)
     }
 
     @Test
     fun isTerminate() {
-        assertTrue(predicate.isSatisified(memory = Memory(10))) {
+        assertTrue(predicate.isSatisfied(memory = MockMemory(10))) {
             "Must terminate when maximum number of iterations without improvement reached"
         }
-        assertTrue(predicate.isSatisified(memory = Memory(11))) {
+        assertTrue(predicate.isSatisfied(memory = MockMemory(11))) {
             "Must terminate when maximum number of iterations without improvement reached"
         }
-        assertFalse(predicate.isSatisified(memory = Memory(9))) {
+        assertFalse(predicate.isSatisfied(memory = MockMemory(9))) {
             "Must not terminate until maximum number of iterations without improvement reached"
         }
-        assertFalse(predicate.isSatisified(memory = Memory(0))) {
+        assertFalse(predicate.isSatisfied(memory = MockMemory(0))) {
             "Must not terminate until maximum number of iterations without improvement reached"
         }
     }

@@ -11,6 +11,6 @@ import com.sihvi.glsm.space.SearchSpace
  * @param[T] Type of solution entity
  * @param[M] Memory type
  */
-abstract class Strategy<T, M: IMemory<*>, S: SearchSpace<T>> {
+abstract class Strategy<T, M: IMemory<*, *>, S: SearchSpace<T>> {
     abstract fun step(memory: M, space: S, problem: Problem<T>)
 }
