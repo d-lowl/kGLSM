@@ -1,4 +1,17 @@
 # kGLSM
+
+## Build
+* `./gradlew build` builds into .class files.
+* `./gradlew jar` builds jar file for the library.
+
+### Run in Jupyter Notebook
+This repository has [examples](notebook) written in Jupyter Notebooks. Before running, jar must be built first and requirements need to be installed (primarily `kotlin-jupyter-kernel``)
+```
+./gradlew jar
+pip install -r requirements.txt
+jupyter-notebook
+```
+
 ## Motivation
 This library is to serve as a framework for performing Stochastic Local Search (SLS) based on Generalised Local Search Machines (GLSM). It was shown that best performing SLS (on a variety of classes of problems) are combinations of multiple pure SLS algorithms. The idea of GLSMs is a unified way to build a represent SLS algorithms that may (or may not be) combinations of pure strategies themselves, using Finite State Automata.
 

@@ -12,8 +12,8 @@ enum class IIMode {
 
 class IterativeImprovementStrategy<T>(private val mode: IIMode, private val updateBest: Boolean = true)
     : Strategy<T, Memory<T, BasicSolution<T>>, DiscreteSearchSpace<T>>() {
-    override fun step(memory: Memory<T, BasicSolution<T>>, space: DiscreteSearchSpace<T>, problem: Problem<T>) {
-        val neighbourhood = space.getNeighbourhood(memory.currentSolution.solution)
+    override fun step(memory: Memory<T, BasicSolution<T>>, searchSpace: DiscreteSearchSpace<T>, problem: Problem<T>) {
+        val neighbourhood = searchSpace.getNeighbourhood(memory.currentSolution.solution)
         val neighbourhoodSolutions = neighbourhood
                 .map { problem.evaluate(it) }
                 .zip(neighbourhood)

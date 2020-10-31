@@ -1,5 +1,9 @@
 package com.sihvi.glsm.memory
 
+import com.sihvi.glsm.memory.attribute.MemoryAttribute
+import com.sihvi.glsm.problem.Problem
+import com.sihvi.glsm.space.SearchSpace
+
 /**
  * Data class holds a solution array and a corresponding cost
  *
@@ -29,6 +33,13 @@ data class BasicSolution<T>(val solution: Array<T>, val cost: Double) {
 
 class BasicCurrentState<T>(override var currentSolution: BasicSolution<T>) : CurrentState<T, BasicSolution<T>> {
     override fun getCurrentBest(): BasicSolution<T> = currentSolution
+
+    companion object {
+        fun <T> getInitialSolution(searchSpace: SearchSpace<T>, problem: Problem<T>): BasicSolution<T> {
+            val solution = searchSpace.getInitial()
+            return BasicSolution<T>(solution, problem.evaluate(solution))
+        }
+    }
 }
 
-class BasicMemory<T>(initialSolution: BasicSolution<T>) : Memory<T, BasicSolution<T>>(BasicCurrentState(initialSolution), initialSolution)
+class BasicMemory<T>(initialSolution: BasicSolution<T>, memoryAttributes: List<MemoryAttribute> = listOf()) : Memory<T, BasicSolution<T>>(BasicCurrentState(initialSolution), initialSolution, memoryAttributes)

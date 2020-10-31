@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 
 
 internal class NoImprovementPredicateTest {
-    class MockMemory(override var noImprovementCount: Int) : Memory<Unit, BasicSolution<Unit>>(BasicCurrentState(BasicSolution<Unit>(arrayOf<Unit>(), 0.0)), BasicSolution<Unit>(arrayOf<Unit>(), 0.0))
+    class MockMemory(override var noImprovementCount: Int) : Memory<Unit, BasicSolution<Unit>>(BasicCurrentState(BasicSolution<Unit>(arrayOf<Unit>(), 0.0)), BasicSolution<Unit>(arrayOf<Unit>(), 0.0), listOf())
 
 
 
     companion object {
-        val predicate = NoImprovementPredicate<MockMemory>(10)
+        val predicate = NoImprovementPredicate(10)
     }
 
     @Test

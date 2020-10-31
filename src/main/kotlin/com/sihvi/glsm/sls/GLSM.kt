@@ -1,7 +1,7 @@
 package com.sihvi.glsm.sls
 
 import com.sihvi.glsm.memory.BasicSolution
-import com.sihvi.glsm.memory.IMemory
+import com.sihvi.glsm.memory.Memory
 import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
@@ -14,14 +14,12 @@ import com.sihvi.glsm.transitionpredicate.TransitionPredicate
  * @param[S] Solution type
  * @param[M] Memory type
  * @param[N] Search space type
- * @param[memory] GLSM memory
  * @param[stateMachine] GLSM strategy state machine
  */
-class GLSM<T, S, M: IMemory<T, S>, N: SearchSpace<T>>(
-        private val memory: M,
+open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
         private val stateMachine: StateMachine<T, S, M, N>
 ) {
-    fun solve(space: N, problem: Problem<T>): BasicSolution<T> {
+    fun solve(memory: M, space: N, problem: Problem<T>): BasicSolution<T> {
         while (!stateMachine.isFinished()) {
             stateMachine.strategy?.step(memory, space, problem)
             stateMachine.transition(memory)
@@ -30,8 +28,7 @@ class GLSM<T, S, M: IMemory<T, S>, N: SearchSpace<T>>(
     }
 
     companion object {
-        fun <T, S, M: IMemory<T, S>, N: SearchSpace<T>> getSingleStrategyGLSM(
-                memory: M,
+        fun <T, S, M: Memory<T, S>, N: SearchSpace<T>> getSingleStrategyGLSM(
                 strategy: Strategy<T, M, N>,
                 terminationPredicate: TransitionPredicate<M>
         ): GLSM<T, S, M, N> {
@@ -39,7 +36,7 @@ class GLSM<T, S, M: IMemory<T, S>, N: SearchSpace<T>>(
                     .addStrategy(strategy)
                     .addTransition(StateMachineTransition(0, -1, terminationPredicate))
                     .build()
-            return GLSM(memory, stateMachine)
+            return GLSM(stateMachine)
         }
     }
 }

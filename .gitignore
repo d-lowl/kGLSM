@@ -91,3 +91,5 @@ bin/
 .settings/
 .classpath
 .project
+/env/
+/notebook/.ipynb_checkpoints/

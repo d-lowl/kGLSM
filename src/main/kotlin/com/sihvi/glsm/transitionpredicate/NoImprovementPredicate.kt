@@ -1,9 +1,8 @@
 package com.sihvi.glsm.transitionpredicate
 
-import com.sihvi.glsm.memory.IMemory
+import com.sihvi.glsm.memory.Memory
 
-class NoImprovementPredicate<T>(private val maxIterations: Int): TransitionPredicate<T>
-    where T : IMemory<*, *>
+class NoImprovementPredicate(private val maxIterations: Int): TransitionPredicate<Memory<*, *>>
 {
-    override fun isSatisfied(memory: T): Boolean = memory.noImprovementCount >= maxIterations
+    override fun isSatisfied(memory: Memory<*, *>): Boolean = memory.noImprovementCount >= maxIterations
 }

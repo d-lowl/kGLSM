@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 
 internal class FixedIterationPredicateTest {
-    class MockMemory(override var stepCount: Int) : Memory<Unit, BasicSolution<Unit>>(BasicCurrentState(BasicSolution<Unit>(arrayOf<Unit>(), 0.0)), BasicSolution<Unit>(arrayOf<Unit>(), 0.0))
+    class MockMemory(override var stepCount: Int) : Memory<Unit, BasicSolution<Unit>>(BasicCurrentState(BasicSolution<Unit>(arrayOf<Unit>(), 0.0)), BasicSolution<Unit>(arrayOf<Unit>(), 0.0), listOf())
 
     companion object {
-        val predicate = FixedIterationPredicate<MockMemory>(10)
+        val predicate = FixedIterationPredicate(10)
     }
 
 
