@@ -2,6 +2,7 @@ package com.sihvi.glsm.strategy
 
 import com.sihvi.glsm.memory.BasicSolution
 import com.sihvi.glsm.memory.Memory
+import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.DiscreteSearchSpace
 import kotlin.random.Random
@@ -12,10 +13,10 @@ enum class IIMode {
 
 class IterativeImprovementStrategy<T>(private val mode: IIMode, private val updateBest: Boolean = true)
     : Strategy<T, Memory<T, BasicSolution<T>>, DiscreteSearchSpace<T>>() {
-    override fun step(memory: Memory<T, BasicSolution<T>>, searchSpace: DiscreteSearchSpace<T>, problem: Problem<T>) {
+    override fun step(memory: Memory<T, BasicSolution<T>>, searchSpace: DiscreteSearchSpace<T>, costFunction: CostFunction<T>) {
         val neighbourhood = searchSpace.getNeighbourhood(memory.currentSolution.solution)
         val neighbourhoodSolutions = neighbourhood
-                .map { problem.evaluate(it) }
+                .map { costFunction(it) }
                 .zip(neighbourhood)
                 .map { BasicSolution(it.second, it.first) }
         val bestCost = memory.currentSolution.cost

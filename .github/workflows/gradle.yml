@@ -5,9 +5,7 @@ name: Kotlin with Gradle
 
 on:
   push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
   workflow_dispatch:
 
 jobs:
@@ -25,5 +23,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Run unit tests
-      run: ./gradlew test

@@ -4,7 +4,7 @@ import com.sihvi.glsm.memory.BasicSolution
 import com.sihvi.glsm.memory.Memory
 import com.sihvi.glsm.memory.PopulationSolution
 import com.sihvi.glsm.memory.pickRandom
-import com.sihvi.glsm.problem.Problem
+import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 import kotlin.random.Random
@@ -12,10 +12,10 @@ import kotlin.random.Random
 class Recombination<T>(private val function: (Array<T>, Array<T>) -> Array<T>) : Strategy<T, Memory<T, PopulationSolution<T>>, SearchSpace<T>>() {
 
 
-    override fun step(memory: Memory<T, PopulationSolution<T>>, searchSpace: SearchSpace<T>, problem: Problem<T>) {
+    override fun step(memory: Memory<T, PopulationSolution<T>>, searchSpace: SearchSpace<T>, costFunction: CostFunction<T>) {
         memory.currentSolution = List(memory.currentSolution.size) {
             function(memory.currentSolution.pickRandom(), memory.currentSolution.pickRandom())
-        }.map { BasicSolution(it, problem.evaluate(it)) }
+        }.map { BasicSolution(it, costFunction(it)) }
     }
 
     companion object {

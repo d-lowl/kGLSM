@@ -2,6 +2,7 @@ package com.sihvi.glsm.sls
 
 import com.sihvi.glsm.memory.BasicSolution
 import com.sihvi.glsm.memory.Memory
+import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
@@ -19,9 +20,9 @@ import com.sihvi.glsm.transitionpredicate.TransitionPredicate
 open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
         private val stateMachine: StateMachine<T, S, M, N>
 ) {
-    fun solve(memory: M, space: N, problem: Problem<T>): BasicSolution<T> {
+    fun solve(memory: M, space: N, costFunction: CostFunction<T>): BasicSolution<T> {
         while (!stateMachine.isFinished()) {
-            stateMachine.strategy?.step(memory, space, problem)
+            stateMachine.strategy?.step(memory, space, costFunction)
             stateMachine.transition(memory)
         }
         return memory.bestSolution

@@ -27,14 +27,14 @@ internal class IterativeImprovementStrategyTest {
     @Test
     fun stepBestImprovement() {
         val strategy = IterativeImprovementStrategy<Boolean>(IIMode.BEST)
-        strategy.step(memory, searchSpace, problem)
+        strategy.step(memory, searchSpace, problem::evaluate)
         assert(arrayOf(true, false, false, false, false).contentEquals(memory.currentSolution.solution))
     }
 
     @Test
     fun stepRandomImprovement() {
         val strategy = IterativeImprovementStrategy<Boolean>(IIMode.RANDOM)
-        strategy.step(memory, searchSpace, problem)
+        strategy.step(memory, searchSpace, problem::evaluate)
         assert(memory.currentSolution.solution.filter { it }.size == 1)
     }
 
@@ -43,7 +43,7 @@ internal class IterativeImprovementStrategyTest {
         val strategy = IterativeImprovementStrategy<Boolean>(IIMode.RANDOM)
         val initialSolution = arrayOf(true, false, false, false, false)
         memory = BasicMemory(BasicSolution(initialSolution, problem.evaluate(initialSolution)))
-        strategy.step(memory, searchSpace, problem)
+        strategy.step(memory, searchSpace, problem::evaluate)
         assert(arrayOf(true, false, false, false, false).contentEquals(memory.currentSolution.solution))
     }
 }
