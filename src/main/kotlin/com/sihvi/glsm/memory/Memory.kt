@@ -27,6 +27,13 @@ open class Memory<T, U>(private val currentState: CurrentState<T, U>, initialSol
         }
     }
 
+    override fun toString(): String =
+            "Steps count: $stepCount\n" +
+            "No improvement count: $stepCount\n" +
+            "Best: $bestSolution\n" +
+            "Current state:\n$currentState\n" +
+            "Attributes:\n${memoryAttributes.joinToString("\n")}"
+
     inline fun <reified A> getAttribute(): A =
             memoryAttributes.find { it is A } as A? ?: throw Exception("The requested memory attribute does not exist")
 }

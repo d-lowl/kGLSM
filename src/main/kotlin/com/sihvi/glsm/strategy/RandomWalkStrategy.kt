@@ -13,4 +13,6 @@ class RandomWalkStrategy<T>(private val updateBest: Boolean = true) : Strategy<T
         memory.update(BasicSolution(newSolution, newCost))
         if (updateBest) memory.updateBest()
     }
+
+    override fun toString(): String = "Random Walk${if (updateBest) "[updating best]" else ""}"
 }

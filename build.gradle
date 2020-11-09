@@ -26,12 +26,16 @@ publishing {
 
 repositories {
     mavenCentral()
+//    maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    implementation 'io.github.microutils:kotlin-logging-jvm:2.0.3'
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "ch.qos.logback:logback-core:1.2.3"
 }
 
 test {

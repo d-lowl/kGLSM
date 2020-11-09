@@ -32,4 +32,12 @@ class IterativeImprovementStrategy<T>(private val mode: IIMode, private val upda
         memory.update(newSolution)
         if (updateBest) memory.updateBest()
     }
+
+    override fun toString(): String {
+        val subtype = when (mode) {
+            IIMode.BEST -> "Best"
+            IIMode.RANDOM -> "Random"
+        }
+        return "$subtype Iterative Improvement${if (updateBest) "[updating best]" else ""}"
+    }
 }

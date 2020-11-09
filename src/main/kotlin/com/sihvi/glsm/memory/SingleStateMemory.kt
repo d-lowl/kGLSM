@@ -29,10 +29,14 @@ data class BasicSolution<T>(val solution: Array<T>, val cost: Double) {
         result = 31 * result + cost.hashCode()
         return result
     }
+
+    override fun toString(): String = "{${solution.joinToString(",")} : $cost}"
 }
 
 class BasicCurrentState<T>(override var currentSolution: BasicSolution<T>) : CurrentState<T, BasicSolution<T>> {
     override fun getCurrentBest(): BasicSolution<T> = currentSolution
+
+    override fun toString(): String = currentSolution.toString()
 
     companion object {
         fun <T> getInitialSolution(searchSpace: SearchSpace<T>, problem: Problem<T>): BasicSolution<T> {

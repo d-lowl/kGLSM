@@ -7,6 +7,7 @@ import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 import com.sihvi.glsm.transitionpredicate.TransitionPredicate
+import mu.KotlinLogging
 
 /**
  * Generalised Local Search Machine
@@ -21,14 +22,24 @@ open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
         private val stateMachine: StateMachine<T, S, M, N>
 ) {
     fun solve(memory: M, space: N, costFunction: CostFunction<T>): BasicSolution<T> {
+        logger.info { "Starting GLSM" }
+        logger.info { "Initial strategy state: ${stateMachine.strategy}" }
+        logger.info { "Initial memory:\n$memory" }
         while (!stateMachine.isFinished()) {
             stateMachine.strategy?.step(memory, space, costFunction)
+            logger.info { "Step #${memory.stepCount} finished" }
+            memory.stepCount++
             stateMachine.transition(memory)
+            logger.info { "Next strategy state: ${stateMachine.strategy}" }
         }
+        logger.info { "Solving finished" }
+        logger.info { "Final memory:\n$memory" }
         return memory.bestSolution
     }
 
     companion object {
+        private val logger = KotlinLogging.logger {}
+
         fun <T, S, M: Memory<T, S>, N: SearchSpace<T>> getSingleStrategyGLSM(
                 strategy: Strategy<T, M, N>,
                 terminationPredicate: TransitionPredicate<M>

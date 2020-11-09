@@ -11,6 +11,8 @@ fun <T> PopulationSolution<T>.pickRandom(): Array<T> = this[Random.nextInt(this.
 class PopulationCurrentState<T>(override var currentSolution: PopulationSolution<T>) : CurrentState<T, PopulationSolution<T>> {
     override fun getCurrentBest(): BasicSolution<T> = currentSolution.minBy { it.cost }!!
 
+    override fun toString(): String = "[${currentSolution.joinToString("\n")}]"
+
     companion object {
         fun <T> getInitialSolution(searchSpace: SearchSpace<T>, problem: Problem<T>, populationSize: Int): PopulationSolution<T> {
             require(populationSize > 0)

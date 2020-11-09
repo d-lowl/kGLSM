@@ -9,7 +9,7 @@ import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 import kotlin.random.Random
 
-class Recombination<T>(private val function: (Array<T>, Array<T>) -> Array<T>) : Strategy<T, Memory<T, PopulationSolution<T>>, SearchSpace<T>>() {
+class Recombination<T>(private val name: String = "UNK", private val function: (Array<T>, Array<T>) -> Array<T>) : Strategy<T, Memory<T, PopulationSolution<T>>, SearchSpace<T>>() {
 
 
     override fun step(memory: Memory<T, PopulationSolution<T>>, searchSpace: SearchSpace<T>, costFunction: CostFunction<T>) {
@@ -18,6 +18,8 @@ class Recombination<T>(private val function: (Array<T>, Array<T>) -> Array<T>) :
         }.map { BasicSolution(it, costFunction(it)) }
     }
 
+    override fun toString(): String = "Recombination: $name"
+
     companion object {
         fun <T> singlePointCrossover(a: Array<T>, b: Array<T>): Array<T> {
             require(a.size == b.size)
@@ -25,6 +27,6 @@ class Recombination<T>(private val function: (Array<T>, Array<T>) -> Array<T>) :
             return a.sliceArray(0 until crossoverPoint) + a.sliceArray(crossoverPoint until a.size)
         }
 
-        fun <T> singlePointCrossoverRecombination(): Recombination<T> = Recombination(::singlePointCrossover)
+        fun <T> singlePointCrossoverRecombination(): Recombination<T> = Recombination("Single Point Crossover", ::singlePointCrossover)
     }
 }

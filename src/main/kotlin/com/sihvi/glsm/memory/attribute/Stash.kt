@@ -10,4 +10,6 @@ class Stash<T>: MemoryAttribute {
     fun clearStash() {
         stash.clear()
     }
+
+    override fun toString(): String = "Stash (has ${stash.size} items)"
 }
