@@ -4,6 +4,12 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
 configurations {
     jar.archiveName = 'kglsm.jar'
 }
