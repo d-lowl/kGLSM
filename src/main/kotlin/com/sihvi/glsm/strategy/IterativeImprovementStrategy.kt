@@ -38,6 +38,6 @@ class IterativeImprovementStrategy<T>(private val mode: IIMode, private val upda
             IIMode.BEST -> "Best"
             IIMode.RANDOM -> "Random"
         }
-        return "$subtype Iterative Improvement${if (updateBest) "[updating best]" else ""}"
+        return "$subtype Iterative Improvement${if (updateBest) " [updating best]" else ""}"
     }
 }

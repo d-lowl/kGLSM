@@ -2,6 +2,7 @@ package com.sihvi.glsm.memory
 
 import com.sihvi.glsm.memory.attribute.MemoryAttribute
 import java.lang.Exception
+import kotlin.random.Random
 
 interface CurrentState<T, U> {
     var currentSolution: U
@@ -12,6 +13,8 @@ open class Memory<T, U>(private val currentState: CurrentState<T, U>, initialSol
     var bestSolution: BasicSolution<T> = initialSolution
     open var stepCount: Int = 0
     open var noImprovementCount: Int = 0
+    var randomVariable: Double = 0.0
+        private set
 
     fun update(solution: U) {
         currentState.currentSolution = solution
@@ -25,6 +28,10 @@ open class Memory<T, U>(private val currentState: CurrentState<T, U>, initialSol
         } else {
             noImprovementCount++
         }
+    }
+
+    fun updateRandomVariable() {
+        randomVariable = Random.nextDouble()
     }
 
     override fun toString(): String =

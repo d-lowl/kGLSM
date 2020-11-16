@@ -5,4 +5,5 @@ import com.sihvi.glsm.memory.Memory
 class NoImprovementPredicate(private val maxIterations: Int): TransitionPredicate<Memory<*, *>>
 {
     override fun isSatisfied(memory: Memory<*, *>): Boolean = memory.noImprovementCount >= maxIterations
+    override fun toString(): String = "NO_IMPROVEMENT >= $maxIterations"
 }

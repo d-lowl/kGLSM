@@ -37,6 +37,10 @@ open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
         return memory.bestSolution
     }
 
+    override fun toString(): String = stateMachine.toString()
+
+    fun toASCII(): String? = stateMachine.toASCII()
+
     companion object {
         private val logger = KotlinLogging.logger {}
 

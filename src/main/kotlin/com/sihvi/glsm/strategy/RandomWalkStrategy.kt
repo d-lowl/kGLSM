@@ -6,7 +6,7 @@ import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.problem.Problem
 import com.sihvi.glsm.space.DiscreteSearchSpace
 
-class RandomWalkStrategy<T>(private val updateBest: Boolean = true) : Strategy<T, Memory<T, BasicSolution<T>>, DiscreteSearchSpace<T>>() {
+class RandomWalkStrategy<T>(private val updateBest: Boolean = false) : Strategy<T, Memory<T, BasicSolution<T>>, DiscreteSearchSpace<T>>() {
     override fun step(memory: Memory<T, BasicSolution<T>>, searchSpace: DiscreteSearchSpace<T>, costFunction: CostFunction<T>) {
         val newSolution = searchSpace.getRandomNeighbour(memory.currentSolution.solution)
         val newCost = costFunction(newSolution)
@@ -14,5 +14,5 @@ class RandomWalkStrategy<T>(private val updateBest: Boolean = true) : Strategy<T
         if (updateBest) memory.updateBest()
     }
 
-    override fun toString(): String = "Random Walk${if (updateBest) "[updating best]" else ""}"
+    override fun toString(): String = "Random Walk${if (updateBest) " [updating best]" else ""}"
 }
