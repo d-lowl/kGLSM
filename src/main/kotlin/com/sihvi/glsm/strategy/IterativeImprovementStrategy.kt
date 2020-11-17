@@ -8,27 +8,40 @@ import com.sihvi.glsm.space.DiscreteSearchSpace
 import kotlin.random.Random
 
 enum class IIMode {
-    BEST, RANDOM
+    BEST, FIRST
 }
 
 class IterativeImprovementStrategy<T>(private val mode: IIMode, private val updateBest: Boolean = true)
     : Strategy<T, Memory<T, BasicSolution<T>>, DiscreteSearchSpace<T>>() {
     override fun step(memory: Memory<T, BasicSolution<T>>, searchSpace: DiscreteSearchSpace<T>, costFunction: CostFunction<T>) {
         val neighbourhood = searchSpace.getNeighbourhood(memory.currentSolution.solution)
-        val neighbourhoodSolutions = neighbourhood
-                .map { costFunction(it) }
-                .zip(neighbourhood)
-                .map { BasicSolution(it.second, it.first) }
         val bestCost = memory.currentSolution.cost
-        val improvement = neighbourhoodSolutions.filter { it.cost < bestCost }.toList()
-        val newSolution = if (improvement.isEmpty()) {
-            memory.currentSolution
-        } else {
-            when(mode) {
-                IIMode.BEST -> improvement.minBy { it.cost }!!
-                IIMode.RANDOM -> improvement[Random.nextInt(improvement.size)]
+        var newSolution = memory.currentSolution
+
+        when (mode) {
+            IIMode.FIRST -> {
+                for (neighbour in neighbourhood) {
+                    val cost = costFunction(neighbour)
+                    if (cost < bestCost) {
+                        newSolution = BasicSolution(neighbour, cost)
+                        break
+                    }
+                }
+            }
+            IIMode.BEST -> {
+                val neighbourhoodSolutions = neighbourhood
+                        .map { costFunction(it) }
+                        .zip(neighbourhood)
+                        .map { BasicSolution(it.second, it.first) }
+                val improvement = neighbourhoodSolutions.filter { it.cost < bestCost }.toList()
+                newSolution = if (improvement.isEmpty()) {
+                    memory.currentSolution
+                } else {
+                    improvement.minBy { it.cost }!!
+                }
             }
         }
+
         memory.update(newSolution)
         if (updateBest) memory.updateBest()
     }
@@ -36,7 +49,7 @@ class IterativeImprovementStrategy<T>(private val mode: IIMode, private val upda
     override fun toString(): String {
         val subtype = when (mode) {
             IIMode.BEST -> "Best"
-            IIMode.RANDOM -> "Random"
+            IIMode.FIRST -> "First"
         }
         return "$subtype Iterative Improvement${if (updateBest) " [updating best]" else ""}"
     }

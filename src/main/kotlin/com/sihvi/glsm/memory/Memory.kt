@@ -1,6 +1,7 @@
 package com.sihvi.glsm.memory
 
 import com.sihvi.glsm.memory.attribute.MemoryAttribute
+import mu.KotlinLogging
 import java.lang.Exception
 import kotlin.random.Random
 
@@ -18,14 +19,17 @@ open class Memory<T, U>(private val currentState: CurrentState<T, U>, initialSol
 
     fun update(solution: U) {
         currentState.currentSolution = solution
-        stepCount++
+        logger.info { "Current best cost: ${currentState.getCurrentBest().cost}" }
     }
 
     fun updateBest() {
         if (currentState.getCurrentBest().cost < bestSolution.cost) {
             bestSolution = currentState.getCurrentBest()
             noImprovementCount = 0
+            logger.info { "Total best cost: ${bestSolution.cost}" }
         } else {
+            logger.info { "Total best cost: ${bestSolution.cost} (no improvement)" }
+
             noImprovementCount++
         }
     }
@@ -43,5 +47,9 @@ open class Memory<T, U>(private val currentState: CurrentState<T, U>, initialSol
 
     inline fun <reified A> getAttribute(): A =
             memoryAttributes.find { it is A } as A? ?: throw Exception("The requested memory attribute does not exist")
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
 }
 

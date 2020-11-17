@@ -3,8 +3,12 @@ package com.sihvi.glsm.memory.attribute
 class Stash<T>: MemoryAttribute {
     var stash: MutableList<T> = mutableListOf()
 
-    fun addToStash(items: Collection<T>) {
+    fun addAllToStash(items: Collection<T>) {
         stash.addAll(items)
+    }
+
+    fun addToStash(item: T) {
+        stash.add(item)
     }
 
     fun clearStash() {
