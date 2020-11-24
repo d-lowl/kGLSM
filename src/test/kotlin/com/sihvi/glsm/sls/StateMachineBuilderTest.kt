@@ -12,7 +12,7 @@ internal class StateMachineBuilderTest {
 
     private val dummyStrategy = DummyStrategy()
     private val predicate = UnconditionalPredicate()
-    private lateinit var builder: StateMachineBuilder<Unit, Unit, Memory<Unit, Unit>, SearchSpace<Unit>>
+    private lateinit var builder: StateMachineBuilder<Unit, Unit>
 
     @BeforeEach
     fun setUp() {

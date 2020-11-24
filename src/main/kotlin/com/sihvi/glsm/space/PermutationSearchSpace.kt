@@ -9,7 +9,7 @@ fun Array<*>.isRepeating(): Boolean {
     return false
 }
 
-class PermutationSearchSpace(private val size: Int) : DiscreteSearchSpace<Int> {
+class PermutationSearchSpace(private val size: Int) : SearchSpace<Int> {
     override fun getInitial(): Array<Int> = Array(size) { it }
     override fun getRandomNeighbour(solution: Array<Int>): Array<Int> {
         val a = Random.nextInt(0, size - 1)

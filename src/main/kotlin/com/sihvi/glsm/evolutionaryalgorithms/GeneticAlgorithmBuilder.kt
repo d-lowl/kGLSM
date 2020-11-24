@@ -9,9 +9,14 @@ import com.sihvi.glsm.sls.StateMachine
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.transitionpredicate.TransitionPredicate
 
-class GeneticAlgorithmBuilder<T>(recombination: Recombination<T>, mutation: Mutation<T>, selection: Selection<T>, terminationPredicate: TransitionPredicate<Memory<T, PopulationSolution<T>>>) : GLSMBuilder<T, PopulationSolution<T>, Memory<T, PopulationSolution<T>>, SearchSpace<T>>()
+class GeneticAlgorithmBuilder<T> (
+        recombination: Recombination<T>,
+        mutation: Mutation<T>,
+        selection: Selection<T>,
+        terminationPredicate: TransitionPredicate<Memory<T, PopulationSolution<T>>>
+) : GLSMBuilder<T, PopulationSolution<T>>()
 {
-    private val stateMachine: StateMachine<T, PopulationSolution<T>, Memory<T, PopulationSolution<T>>, SearchSpace<T>>
+    private val stateMachine: StateMachine<T, PopulationSolution<T>>
     init {
         val pushStash = PushStash<T>()
         stateMachine = SequentialStateMachineBuilder(terminationPredicate)
@@ -24,5 +29,5 @@ class GeneticAlgorithmBuilder<T>(recombination: Recombination<T>, mutation: Muta
                 .build()
     }
 
-    override fun build(): GLSM<T, PopulationSolution<T>, Memory<T, PopulationSolution<T>>, SearchSpace<T>> = GLSM(stateMachine)
+    override fun build(): GLSM<T, PopulationSolution<T>> = GLSM(stateMachine)
 }

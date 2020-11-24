@@ -5,22 +5,22 @@ import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 import mu.KotlinLogging
 
-open class StateMachineBuilder<T, S, M: Memory<T, S>, N: SearchSpace<T>> {
+open class StateMachineBuilder<T, U> {
 
-    private var strategies = mutableListOf<Strategy<T, M, N>>()
-    private var transitions = mutableListOf<StateMachineTransition<M>>()
+    private var strategies = mutableListOf<Strategy<T, U>>()
+    private var transitions = mutableListOf<StateMachineTransition<Memory<T, U>>>()
 
-    fun addStrategy(strategy: Strategy<T, M, N>): StateMachineBuilder<T, S, M, N> {
+    fun addStrategy(strategy: Strategy<T, U>): StateMachineBuilder<T, U> {
         strategies.add(strategy)
         return this
     }
 
-    fun addTransition(transition: StateMachineTransition<M>): StateMachineBuilder<T, S, M, N> {
+    fun addTransition(transition: StateMachineTransition<Memory<T, U>>): StateMachineBuilder<T, U> {
         transitions.add(transition)
         return this
     }
 
-    open fun build(): StateMachine<T, S, M, N> {
+    open fun build(): StateMachine<T, U> {
         if (transitions.any { it.from == -1 }) {
             logger.error { "Termination must not have outgoing transitions" }
             throw Exception("Termination must not have outgoing transitions")

@@ -18,10 +18,10 @@ import mu.KotlinLogging
  * @param[N] Search space type
  * @param[stateMachine] GLSM strategy state machine
  */
-open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
-        private val stateMachine: StateMachine<T, S, M, N>
+open class GLSM<T, U>(
+        private val stateMachine: StateMachine<T, U>
 ) {
-    fun solve(memory: M, space: N, costFunction: CostFunction<T>): BasicSolution<T> {
+    fun solve(memory: Memory<T, U>, space: SearchSpace<T>, costFunction: CostFunction<T>): BasicSolution<T> {
         logger.info { "Starting GLSM" }
         logger.info { "Initial strategy state: ${stateMachine.strategy}" }
         logger.info { "Initial memory:\n$memory" }
@@ -44,11 +44,11 @@ open class GLSM<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
     companion object {
         private val logger = KotlinLogging.logger {}
 
-        fun <T, S, M: Memory<T, S>, N: SearchSpace<T>> getSingleStrategyGLSM(
-                strategy: Strategy<T, M, N>,
-                terminationPredicate: TransitionPredicate<M>
-        ): GLSM<T, S, M, N> {
-            val stateMachine = StateMachineBuilder<T, S, M, N>()
+        fun <T, U> getSingleStrategyGLSM(
+                strategy: Strategy<T, U>,
+                terminationPredicate: TransitionPredicate<Memory<T, U>>
+        ): GLSM<T, U> {
+            val stateMachine = StateMachineBuilder<T, U>()
                     .addStrategy(strategy)
                     .addTransition(StateMachineTransition(0, -1, terminationPredicate))
                     .build()

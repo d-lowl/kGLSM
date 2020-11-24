@@ -17,13 +17,13 @@ data class StateMachineTransition<M: Memory<*, *>>(
     override fun toString(): String = "$from -> $to [label=\"$transitionPredicate\"]"
 }
 
-class StateMachine<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
-        private val strategies: Array<Strategy<T, M, N>>,
-        private val transitions: List<StateMachineTransition<M>>
+class StateMachine<T, U>(
+        private val strategies: Array<Strategy<T, U>>,
+        private val transitions: List<StateMachineTransition<Memory<T, U>>>
 ) {
     private var currentState = 0
 
-    fun transition(memory: M) {
+    fun transition(memory: Memory<T, U>) {
         memory.updateRandomVariable()
         val candidateTransitions = transitions
                 .filter { it.from == currentState }
@@ -36,7 +36,7 @@ class StateMachine<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
 
     fun isFinished(): Boolean = currentState == -1
 
-    var strategy: Strategy<T, M, N>? = null
+    var strategy: Strategy<T, U>? = null
         get() = strategies.getOrNull(currentState)
         private set
 
@@ -51,7 +51,7 @@ class StateMachine<T, S, M: Memory<T, S>, N: SearchSpace<T>>(
                     "\nS -> 0 [label=\"⊤\"]\n" +
                     "}"
 
-    fun String.runCommand(input: String): String? {
+    private fun String.runCommand(input: String): String? {
         try {
             val parts = this.split("\\s".toRegex())
             val proc = ProcessBuilder(*parts.toTypedArray())

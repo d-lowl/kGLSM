@@ -5,8 +5,8 @@ import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.sls.GLSM
 import com.sihvi.glsm.space.SearchSpace
 
-class GLSMWrapperStrategy<T, S, M: Memory<T, S>, N: SearchSpace<T>>(private val glsm: GLSM<T, S, M, N>) : Strategy<T, M, N>() {
-    override fun step(memory: M, searchSpace: N, costFunction: CostFunction<T>) {
+class GLSMWrapperStrategy<T, U>(private val glsm: GLSM<T, U>) : Strategy<T, U>() {
+    override fun step(memory: Memory<T, U>, searchSpace: SearchSpace<T>, costFunction: CostFunction<T>) {
         glsm.solve(memory, searchSpace, costFunction)
     }
 }

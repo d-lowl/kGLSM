@@ -2,7 +2,7 @@ package com.sihvi.glsm.space
 
 import kotlin.random.Random
 
-class BooleanSearchSpace(private val noVariables: Int) : DiscreteSearchSpace<Boolean> {
+class BooleanSearchSpace(private val noVariables: Int) : SearchSpace<Boolean> {
     override fun getNeighbourhood(solution: Array<Boolean>): Sequence<Array<Boolean>> =
         sequence {
             for (i in solution.indices) {

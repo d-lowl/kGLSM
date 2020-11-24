@@ -8,7 +8,10 @@ import com.sihvi.glsm.problem.CostFunction
 import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 
-class Selection<T>(private val name: String = "UNK", private val selectionFunction: (Collection<BasicSolution<T>>, Int) -> List<BasicSolution<T>>): Strategy<T, Memory<T, PopulationSolution<T>>, SearchSpace<T>>() {
+class Selection<T> (
+        private val name: String = "UNK",
+        private val selectionFunction: (Collection<BasicSolution<T>>, Int) -> List<BasicSolution<T>>
+): Strategy<T, PopulationSolution<T>>() {
     override fun step(memory: Memory<T, PopulationSolution<T>>, searchSpace: SearchSpace<T>, costFunction: CostFunction<T>) {
         val stash = memory.getAttribute<Stash<BasicSolution<T>>>()
         memory.currentSolution = selectionFunction(stash.stash, memory.currentSolution.size)

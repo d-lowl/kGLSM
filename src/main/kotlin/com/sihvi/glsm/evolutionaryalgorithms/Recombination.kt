@@ -9,7 +9,10 @@ import com.sihvi.glsm.space.SearchSpace
 import com.sihvi.glsm.strategy.Strategy
 import kotlin.random.Random
 
-class Recombination<T>(private val name: String = "UNK", private val function: (Array<T>, Array<T>) -> Array<T>) : Strategy<T, Memory<T, PopulationSolution<T>>, SearchSpace<T>>() {
+class Recombination<T> (
+        private val name: String = "UNK",
+        private val function: (Array<T>, Array<T>) -> Array<T>
+) : Strategy<T, PopulationSolution<T>>() {
 
 
     override fun step(memory: Memory<T, PopulationSolution<T>>, searchSpace: SearchSpace<T>, costFunction: CostFunction<T>) {
