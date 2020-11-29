@@ -1,4 +1,5 @@
 # kGLSM
+[![](https://jitpack.io/v/d-lowl/kGLSM.svg)](https://jitpack.io/#d-lowl/kGLSM)
 
 ## Build
 * `./gradlew build` builds into .class files.
