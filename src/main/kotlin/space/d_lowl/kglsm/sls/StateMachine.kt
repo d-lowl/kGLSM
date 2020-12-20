@@ -15,13 +15,22 @@ import java.util.concurrent.TimeUnit
  * @param[transitionPredicate] Transition predicate
  */
 data class StateMachineTransition<M: Memory<*, *>>(
-        val from: Int,
-        val to: Int,
+        val to: String,
         val transitionPredicate: TransitionPredicate<M>,
         val priority: Int = 0
 ) {
-    override fun toString(): String = "$from -> $to [label=\"$transitionPredicate\"]"
+    fun toString(from: String): String = "$from -> $to [label=\"$transitionPredicate\"]"
 }
+
+/**
+ * State Machine Node
+ *
+ *
+ */
+data class StateMachineNode<T, U>(
+        val strategy: Strategy<T, U>?,
+        val transitions: ArrayList<StateMachineTransition<Memory<T, U>>> = arrayListOf()
+)
 
 /**
  * GLSM State Machine
@@ -32,10 +41,10 @@ data class StateMachineTransition<M: Memory<*, *>>(
  * @param[transitions] List of transitions
  */
 class StateMachine<T, U>(
-    private val strategies: Array<Strategy<T, U>>,
-    private val transitions: List<StateMachineTransition<Memory<T, U>>>
+        private val states: Map<String, StateMachineNode<T, U>>,
+        private val entrypoint: String
 ) {
-    private var currentState = 0
+    private var currentStateName = entrypoint
 
     /**
      * Perform a transition according to the current state and [memory]
@@ -44,34 +53,36 @@ class StateMachine<T, U>(
      */
     fun transition(memory: Memory<T, U>) {
         memory.updateRandomVariable()
-        val candidateTransitions = transitions
-                .filter { it.from == currentState }
-                .filter { it.transitionPredicate.isSatisfied(memory) }
+        val candidateTransitions = currentState?.transitions?.filter { it.transitionPredicate.isSatisfied(memory) }
 
-        if (candidateTransitions.isNotEmpty()) {
-            currentState = candidateTransitions.maxBy { it.priority }?.to ?: currentState
+        if (candidateTransitions != null && candidateTransitions.isNotEmpty()) {
+            currentStateName = candidateTransitions.maxBy { it.priority }?.to ?: currentStateName
         }
     }
 
     /**
      * Check if the state machine is in the termination state
      */
-    fun isFinished(): Boolean = currentState == -1
+    fun isFinished(): Boolean = currentStateName == TERMINATION_STATE_LABEL
 
-    var strategy: Strategy<T, U>? = null
-        get() = strategies.getOrNull(currentState)
+    var currentState: StateMachineNode<T, U>? = null
+        get() = states[currentStateName]
         private set
 
-    override fun toString(): String =
-                    "digraph G {\n" +
-                    "S [label=\"Enter\"]\n" +
-                    "-1 [label=\"Terminate\", border=\"double\"]\n " +
-                    strategies
-                            .mapIndexed { index, strategy -> "$index [label=\"$strategy\"]"  }
-                            .joinToString("\n") + "\n" +
-                    transitions.joinToString("\n") +
-                    "\nS -> 0 [label=\"⊤\"]\n" +
-                    "}"
+    var strategy: Strategy<T, U>? = null
+        get() = currentState?.strategy
+        private set
+
+    override fun toString(): String = ""
+//                    "digraph G {\n" +
+//                    "S [label=\"Enter\"]\n" +
+//                    "-1 [label=\"Terminate\", border=\"double\"]\n " +
+//                    strategies
+//                            .mapIndexed { index, strategy -> "$index [label=\"$strategy\"]"  }
+//                            .joinToString("\n") + "\n" +
+//                    transitions.joinToString("\n") +
+//                    "\nS -> 0 [label=\"⊤\"]\n" +
+//                    "}"
 
     private fun String.runCommand(input: String): String? {
         try {
@@ -100,5 +111,13 @@ class StateMachine<T, U>(
     fun toASCII(): String? {
         val dot = toString()//.replace("\n", " ").replace("\"", "\\\"")
         return "graph-easy --as_ascii".runCommand(dot)
+    }
+
+    companion object {
+        const val TERMINATION_STATE_LABEL = "TERMINATION_STATE"
+
+        fun <T, U> getDefaultStateMapping(): Map<String, StateMachineNode<T, U>> = mapOf(
+                TERMINATION_STATE_LABEL to StateMachineNode(null)
+        )
     }
 }

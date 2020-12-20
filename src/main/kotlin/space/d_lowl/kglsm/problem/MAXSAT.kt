@@ -7,7 +7,7 @@ data class SATLiteral(val index: Int, val negated: Boolean) {
 }
 
 class SATClause(private val literals: Array<SATLiteral>) {
-    val maxIndex = literals.map { it.index }.max() ?: 0
+    private val maxIndex = literals.map { it.index }.max() ?: 0
 
     fun evaluate(assignment: Array<Boolean>): Boolean {
         assert(assignment.size - 1 >= maxIndex)

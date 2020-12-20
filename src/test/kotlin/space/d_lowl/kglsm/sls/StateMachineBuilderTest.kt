@@ -20,17 +20,17 @@ internal class StateMachineBuilderTest {
     @Test
     fun testBuildSimple() {
         builder
-            .addStrategy(dummyStrategy)
-            .addTransition(StateMachineTransition(0, -1, predicate))
-            .build()
+                .addNode("DUMMY", dummyStrategy)
+                .addTransition("DUMMY", StateMachineTransition(StateMachine.TERMINATION_STATE_LABEL, predicate))
+                .build("DUMMY")
     }
 
     @Test
     fun testBuildNonTerminating() {
         val exception = assertThrows<Exception> {
             builder
-                .addStrategy(dummyStrategy)
-                .build()
+                    .addNode("DUMMY", dummyStrategy)
+                    .build("DUMMY")
         }
         assert(exception.message == "No path leads to termination")
     }
@@ -39,8 +39,9 @@ internal class StateMachineBuilderTest {
     fun testBuildTransitionFromTermination() {
         val exception = assertThrows<Exception> {
             builder
-                .addTransition(StateMachineTransition(-1, 0, predicate))
-                .build()
+                    .addNode("DUMMY", dummyStrategy)
+                    .addTransition(StateMachine.TERMINATION_STATE_LABEL, StateMachineTransition("DUMMY", predicate))
+                    .build("DUMMY")
         }
         assert(exception.message == "Termination must not have outgoing transitions")
     }

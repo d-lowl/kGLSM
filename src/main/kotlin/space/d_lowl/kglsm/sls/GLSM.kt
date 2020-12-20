@@ -52,24 +52,5 @@ open class GLSM<T, U>(
 
     companion object {
         private val logger = KotlinLogging.logger {}
-
-        /**
-         * Returns single strategy GLSM
-         *
-         * @param[T] Solution entity type
-         * @param[U] Solution type
-         * @param[strategy] Strategy to use
-         * @param[terminationPredicate] Termination predicate
-         */
-        fun <T, U> getSingleStrategyGLSM(
-            strategy: Strategy<T, U>,
-            terminationPredicate: TransitionPredicate<Memory<T, U>>
-        ): GLSM<T, U> {
-            val stateMachine = StateMachineBuilder<T, U>()
-                    .addStrategy(strategy)
-                    .addTransition(StateMachineTransition(0, -1, terminationPredicate))
-                    .build()
-            return GLSM(stateMachine)
-        }
     }
 }
