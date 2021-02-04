@@ -1,48 +1,56 @@
 package space.d_lowl.kglsm.sls
 
-import space.d_lowl.kglsm.mock.DummyStrategy
-import space.d_lowl.kglsm.general.transitionpredicate.UnconditionalPredicate
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import space.d_lowl.kglsm.general.transitionpredicate.UnconditionalPredicate
+import space.d_lowl.kglsm.mock.DummyStrategy
 
 internal class StateMachineBuilderTest {
 
     private val dummyStrategy = DummyStrategy()
     private val predicate = UnconditionalPredicate()
-    private lateinit var builder: StateMachineBuilder<Unit, Unit>
-
-    @BeforeEach
-    fun setUp() {
-        builder = StateMachineBuilder()
-    }
 
     @Test
     fun testBuildSimple() {
-        builder
-                .addNode("DUMMY", dummyStrategy)
-                .addTransition("DUMMY", StateMachineTransition(StateMachine.TERMINATION_STATE_LABEL, predicate))
-                .build("DUMMY")
+        stateMachine<Unit, Unit> {
+            entrypoint = "DUMMY"
+            node {
+                name = "DUMMY"
+                strategy = dummyStrategy
+                transition {
+                    to = StateMachine.TERMINATION_STATE_LABEL
+                    transitionPredicate = predicate
+                }
+            }
+        }
     }
 
     @Test
     fun testBuildNonTerminating() {
-        val exception = assertThrows<Exception> {
-            builder
-                    .addNode("DUMMY", dummyStrategy)
-                    .build("DUMMY")
+        var exception = assertThrows<Exception> {
+            stateMachine<Unit, Unit> {
+                entrypoint = "DUMMY"
+                node {
+                    name = "DUMMY"
+                    strategy = dummyStrategy
+                }
+            }
         }
         assert(exception.message == "No path leads to termination")
-    }
 
-    @Test
-    fun testBuildTransitionFromTermination() {
-        val exception = assertThrows<Exception> {
-            builder
-                    .addNode("DUMMY", dummyStrategy)
-                    .addTransition(StateMachine.TERMINATION_STATE_LABEL, StateMachineTransition("DUMMY", predicate))
-                    .build("DUMMY")
+        exception = assertThrows<Exception> {
+            stateMachine<Unit, Unit> {
+                entrypoint = "DUMMY"
+                node {
+                    name = "DUMMY"
+                    strategy = dummyStrategy
+                    transition {
+                        to = "DUMMY"
+                        transitionPredicate = predicate
+                    }
+                }
+            }
         }
-        assert(exception.message == "Termination must not have outgoing transitions")
+        assert(exception.message == "No path leads to termination")
     }
 }

@@ -6,6 +6,21 @@ import space.d_lowl.kglsm.general.transitionpredicate.NotPredicate
 import space.d_lowl.kglsm.general.transitionpredicate.TransitionPredicate
 import space.d_lowl.kglsm.general.transitionpredicate.UnconditionalPredicate
 
+class SequentialStep<T, U>(val name: String, val strategy: Strategy<T, U>) {
+    private constructor(builder: Builder<T, U>) : this(builder.name!!, builder.strategy!!)
+
+    class Builder<T, U> {
+        var name: String? = null
+        var strategy: Strategy<T, U>? = null
+
+        fun build(): SequentialStep<T, U> {
+            assert(name != null)
+            assert(strategy != null)
+            return SequentialStep(this)
+        }
+    }
+}
+
 /**
  * Sequential State Machine builder
  *
@@ -14,34 +29,59 @@ import space.d_lowl.kglsm.general.transitionpredicate.UnconditionalPredicate
  *
  * @param[T] Solution entity type
  * @param[U] Solution type
- * @param[terminationPredicate] Termination predicate
  */
-class SequentialStateMachineBuilder<T, U>(private val terminationPredicate: TransitionPredicate<Memory<T, U>>): StateMachineBuilder<T, U>() {
+class SequentialStateMachineBuilder<T, U> {
+    var steps: MutableList<SequentialStep<T, U>> = mutableListOf()
+    var terminationPredicate: TransitionPredicate<Memory<T, U>>? = null
     private val unconditionalPredicate = UnconditionalPredicate()
-    private var startingNodeName: String? = null
-    private var lastNodeName: String? = null
-    /**
-     * Add a step to the sequence
-     *
-     * @param[strategy] Strategy to use as a step
-     */
-    fun addStep(nodeName: String, strategy: Strategy<T, U>): SequentialStateMachineBuilder<T, U> {
-        this.addNode(nodeName, strategy)
-        if (startingNodeName == null) {
-            startingNodeName = nodeName
-        }
-        if (lastNodeName != null) this.addTransition(lastNodeName!!, StateMachineTransition(nodeName, unconditionalPredicate))
-        lastNodeName = nodeName
-        return this
+
+    inline fun step(initStep: SequentialStep.Builder<T, U>.() -> Unit): SequentialStep<T, U> {
+        val builder = SequentialStep.Builder<T, U>()
+        builder.initStep()
+        val step = builder.build()
+        steps.add(step)
+        return step
     }
 
     /**
      * Build Sequential State Machine
      */
     fun build(): StateMachine<T, U> {
-        if (lastNodeName == null || startingNodeName == null) throw Exception("No nodes have been added")
-        this.addTransition(lastNodeName!!, StateMachineTransition(StateMachine.TERMINATION_STATE_LABEL, terminationPredicate))
-        this.addTransition(lastNodeName!!, StateMachineTransition(startingNodeName!!, NotPredicate(terminationPredicate)))
-        return super.build(startingNodeName!!)
+        if (steps.size == 0) throw Exception("No nodes have been added")
+        if (terminationPredicate == null) throw Exception("No termination predicate specified")
+
+        return stateMachine<T, U> {
+            entrypoint = steps.first().name
+            steps.zipWithNext().forEach { pair ->
+                val current = pair.first
+                val next = pair.second
+                node {
+                    name = current.name
+                    strategy = current.strategy
+                    transition {
+                        name = next.name
+                        transitionPredicate = unconditionalPredicate
+                    }
+                }
+            }
+            node {
+                name = steps.last().name
+                strategy = steps.last().strategy
+                transition {
+                    name = steps.first().name
+                    transitionPredicate = NotPredicate(terminationPredicate!!)
+                }
+                transition {
+                    name = StateMachine.TERMINATION_STATE_LABEL
+                    transitionPredicate = terminationPredicate!!
+                }
+            }
+        }
     }
+}
+
+inline fun <T, U> sequentialStateMachine(initStateMachine: SequentialStateMachineBuilder<T, U>.() -> Unit): StateMachine<T, U> {
+    val builder = SequentialStateMachineBuilder<T, U>()
+    builder.initStateMachine()
+    return builder.build()
 }

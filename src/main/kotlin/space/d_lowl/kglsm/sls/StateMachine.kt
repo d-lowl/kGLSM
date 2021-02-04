@@ -1,5 +1,6 @@
 package space.d_lowl.kglsm.sls
 
+import mu.KotlinLogging
 import space.d_lowl.kglsm.general.memory.Memory
 import space.d_lowl.kglsm.general.strategy.Strategy
 import space.d_lowl.kglsm.general.transitionpredicate.TransitionPredicate
@@ -10,16 +11,33 @@ import java.util.concurrent.TimeUnit
  * State Machine Transition
  *
  * @param[M] Memory type
- * @param[from] State to transit from
  * @param[to] State to transit to
  * @param[transitionPredicate] Transition predicate
+ * @param[priority] Priority of transition if multiple predicates resolve to true
  */
 data class StateMachineTransition<M: Memory<*, *>>(
         val to: String,
         val transitionPredicate: TransitionPredicate<M>,
         val priority: Int = 0
 ) {
+    private constructor(builder: Builder<M>) : this(builder.to!!, builder.transitionPredicate!!, builder.priority)
+
     fun toString(from: String): String = "$from -> $to [label=\"$transitionPredicate\"]"
+
+    class Builder<M : Memory<*, *>> {
+        var to: String? = null
+            internal set
+        var transitionPredicate: TransitionPredicate<M>? = null
+            internal set
+        var priority: Int = 0
+            internal set
+
+        fun build(): StateMachineTransition<M> {
+            assert(to != null)
+            assert(transitionPredicate != null)
+            return StateMachineTransition(this)
+        }
+    }
 }
 
 /**
@@ -30,20 +48,45 @@ data class StateMachineTransition<M: Memory<*, *>>(
 data class StateMachineNode<T, U>(
         val strategy: Strategy<T, U>?,
         val transitions: ArrayList<StateMachineTransition<Memory<T, U>>> = arrayListOf()
-)
+) {
+    private constructor(builder: Builder<T, U>) : this(builder.strategy, builder.transitions)
+
+    class Builder<T, U> {
+        var name: String? = null
+        var strategy: Strategy<T, U>? = null
+        var transitions: ArrayList<StateMachineTransition<Memory<T, U>>> = arrayListOf()
+            private set
+
+        inline fun transition(initTransition: StateMachineTransition.Builder<Memory<T, U>>.() -> Unit): StateMachineTransition<Memory<T, U>> {
+            val builder = StateMachineTransition.Builder<Memory<T, U>>()
+            builder.initTransition()
+            val transition = builder.build()
+            transitions.add(transition)
+            return transition
+        }
+
+        fun build(): StateMachineNode<T, U> {
+            assert(name != null)
+            return StateMachineNode(this)
+        }
+    }
+}
 
 /**
  * GLSM State Machine
  *
  * @param[T] Solution entity type
  * @param[U] Solution type
- * @param[strategies] Array of strategies to be used as states
- * @param[transitions] List of transitions
+ * @param[states] Map of states of a state machine by their labels
+ * @param[entrypoint] Label of an entrypoint
  */
 class StateMachine<T, U>(
         private val states: Map<String, StateMachineNode<T, U>>,
-        private val entrypoint: String
+        entrypoint: String
 ) {
+
+    private constructor(builder: Builder<T, U>) : this(builder.states.toMap(), builder.entrypoint!!)
+
     private var currentStateName = entrypoint
 
     /**
@@ -120,4 +163,73 @@ class StateMachine<T, U>(
                 TERMINATION_STATE_LABEL to StateMachineNode(null)
         )
     }
+
+    class Builder<T, U> {
+        var states: MutableMap<String, StateMachineNode<T, U>> = getDefaultStateMapping<T, U>().toMutableMap()
+            private set
+        var entrypoint: String? = null
+            internal set
+
+        fun build(): StateMachine<T, U> {
+            assert(entrypoint != null)
+            if (states[TERMINATION_STATE_LABEL]!!.transitions.size > 0) {
+                logger.error { "Termination must not have outgoing transitions" }
+                throw Exception("Termination must not have outgoing transitions")
+            }
+            val notConnected = checkNotConnected(entrypoint!!, states)
+            if (notConnected.contains(TERMINATION_STATE_LABEL)) {
+                logger.error { "No path leads to termination" }
+                throw Exception("No path leads to termination")
+            }
+            if (notConnected.isNotEmpty()) {
+                logger.warn { "Some states are unreachable:\n${notConnected.map { states[it]!!.strategy }.joinToString(", ")}" }
+            }
+            return StateMachine(this)
+        }
+
+        inline fun node(initNode: StateMachineNode.Builder<T, U>.() -> Unit): StateMachineNode<T, U> {
+            val builder = StateMachineNode.Builder<T, U>()
+            builder.initNode()
+            val node = builder.build()
+            val name = builder.name!!
+            if (name == TERMINATION_STATE_LABEL) throw Exception("$TERMINATION_STATE_LABEL label is reserved")
+            if (name in states.keys) throw Exception("State Machine Node $name already exists")
+            states[name] = node
+            return node
+        }
+
+        companion object {
+            private val logger = KotlinLogging.logger {}
+
+            private fun <T, U> checkNotConnected(start: String, stateMap: Map<String, StateMachineNode<T, U>>): List<String> {
+                fun <E> MutableList<E>.pop(): E {
+                    val res = this.first()
+                    this.removeAt(0)
+                    return res
+                }
+
+                val stateIndices = stateMap.keys.toMutableList()
+                stateIndices.remove(start)
+                val queue = mutableListOf(start)
+                while (queue.isNotEmpty()) {
+                    val current = queue.pop()
+                    val neighbours = (stateMap[current]
+                            ?: throw Exception("$current node does not exist")).transitions.map { it.to }
+                    neighbours.forEach {
+                        if (stateIndices.contains(it)) {
+                            stateIndices.remove(it)
+                            queue.add(it)
+                        }
+                    }
+                }
+                return stateIndices.toList()
+            }
+        }
+    }
+}
+
+inline fun <T, U> stateMachine(initStateMachine: StateMachine.Builder<T, U>.() -> Unit): StateMachine<T, U> {
+    val builder = StateMachine.Builder<T, U>()
+    builder.initStateMachine()
+    return builder.build()
 }
