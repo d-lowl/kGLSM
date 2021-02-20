@@ -15,7 +15,7 @@ class AnnealingStep<T> : Strategy<T, BasicSolution<T>>() {
         val temperature = memory.getAttribute<Temperature>().temperature
         if (
                 memory.currentSolution.cost > candidateNeighbourCost ||
-                metropolisCondition(memory.randomVariable, memory.currentSolution.cost, candidateNeighbourCost, temperature)
+                metropolisCriterion(memory.randomVariable, memory.currentSolution.cost, candidateNeighbourCost, temperature)
         ) {
             memory.update(BasicSolution(candidateNeighbour, candidateNeighbourCost))
         }
@@ -25,7 +25,13 @@ class AnnealingStep<T> : Strategy<T, BasicSolution<T>>() {
     override fun toString(): String = "Simulated Annealing Step"
 
     companion object {
-        fun metropolisCondition(randomVariable: Double, lowerCost: Double, higherCost: Double, temperature: Double) =
-                randomVariable < exp((lowerCost - higherCost) / temperature)
+        /**
+         * Metropolis Acceptance Criterion
+         *
+         * Reference: https://link.springer.com/chapter/10.1007/978-1-4757-5362-2_6
+         * Chapter 6, Section 2.1, Formula 6.2
+         */
+        fun metropolisCriterion(randomVariable: Double, lowerCost: Double, higherCost: Double, temperature: Double) =
+                randomVariable <= exp((lowerCost - higherCost) / temperature)
     }
 }

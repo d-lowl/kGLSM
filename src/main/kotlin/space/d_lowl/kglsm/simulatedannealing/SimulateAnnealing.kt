@@ -10,11 +10,23 @@ import space.d_lowl.kglsm.simulatedannealing.transitionpredicate.TemperatureLowe
 import space.d_lowl.kglsm.sls.StateMachine
 import space.d_lowl.kglsm.sls.stateMachine
 
+/**
+ * Simulated Annealing
+ *
+ * Reference: https://link.springer.com/chapter/10.1007/978-1-4757-5362-2_6
+ */
 object SimulatedAnnealing {
+
+    /**
+     * Get Simulated Annealing state machine
+     *
+     * Reference: https://link.springer.com/chapter/10.1007/978-1-4757-5362-2_6
+     * Chapter 6, Section 1
+     */
     fun <T> getStateMachine(initialTemperature: Double, temperatureSchedule: TemperatureSchedule<T>): StateMachine<T, BasicSolution<T>> {
         val reset = ResetTemperature<T>(initialTemperature)
         val step = AnnealingStep<T>()
-        val terminationPredicate = TemperatureLowerPredicate(0.0)
+        val terminationPredicate = TemperatureLowerPredicate(0.01)
         val continuePredicate = NotPredicate(terminationPredicate)
 
         return stateMachine {

@@ -1,12 +1,10 @@
 package space.d_lowl.kglsm.sls
 
+import mu.KotlinLogging
 import space.d_lowl.kglsm.general.memory.BasicSolution
 import space.d_lowl.kglsm.general.memory.Memory
-import space.d_lowl.kglsm.problem.CostFunction
 import space.d_lowl.kglsm.general.space.SearchSpace
-import space.d_lowl.kglsm.general.strategy.Strategy
-import space.d_lowl.kglsm.general.transitionpredicate.TransitionPredicate
-import mu.KotlinLogging
+import space.d_lowl.kglsm.problem.CostFunction
 
 /**
  * Generalised Local Search Machine
@@ -34,6 +32,7 @@ open class GLSM<T, U>(
             logger.info { "Step #${memory.stepCount} finished" }
             memory.stepCount++
             stateMachine.transition(memory)
+            logger.info { "$memory" }
             logger.info { "Next strategy state: ${stateMachine.strategy}" }
         }
         logger.info { "Solving finished" }
