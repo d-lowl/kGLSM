@@ -14,8 +14,8 @@ class SequentialStep<T, U>(val name: String, val strategy: Strategy<T, U>) {
         var strategy: Strategy<T, U>? = null
 
         fun build(): SequentialStep<T, U> {
-            assert(name != null)
-            assert(strategy != null)
+            checkNotNull(name)
+            checkNotNull(strategy)
             return SequentialStep(this)
         }
     }

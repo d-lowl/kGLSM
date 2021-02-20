@@ -33,8 +33,8 @@ data class StateMachineTransition<M: Memory<*, *>>(
             internal set
 
         fun build(): StateMachineTransition<M> {
-            assert(to != null)
-            assert(transitionPredicate != null)
+            checkNotNull(to)
+            checkNotNull(transitionPredicate)
             return StateMachineTransition(this)
         }
     }
@@ -66,7 +66,7 @@ data class StateMachineNode<T, U>(
         }
 
         fun build(): StateMachineNode<T, U> {
-            assert(name != null)
+            checkNotNull(name)
             return StateMachineNode(this)
         }
     }
@@ -171,7 +171,7 @@ class StateMachine<T, U>(
             internal set
 
         fun build(): StateMachine<T, U> {
-            assert(entrypoint != null)
+            checkNotNull(entrypoint)
             if (states[TERMINATION_STATE_LABEL]!!.transitions.size > 0) {
                 logger.error { "Termination must not have outgoing transitions" }
                 throw Exception("Termination must not have outgoing transitions")
